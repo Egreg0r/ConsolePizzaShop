@@ -15,12 +15,15 @@ namespace ConsolePizzaShop
             {
                 // This sample requires the database to be created before running.
                 Console.WriteLine($"Database path: {db.DbPath}");
-                // Create
-                SeedData.Initialize();
-            }
 
-            var order = new NewOrder();
-            order.CreateOrder();
+            }
+            SeedData.Initialize();
+            NewOrder.CreateCheck();
+
+
+
+            //var order = new NewOrder();
+            //NewOrder.CreateCheck();
 
         }
 

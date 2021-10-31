@@ -11,7 +11,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConsolePizzaShop
 {
+    /*
     #region abstact class
+    
     public abstract class Product
     {
         public Guid Guid { get; set; }
@@ -27,15 +29,15 @@ namespace ConsolePizzaShop
         public string Name { get; set; }
         public string Email { get; set; }
     }
-
-
     #endregion
+    */
 
     // ------------------------
     // Чеки
     // ------------------------
 
     // Позиция в чеке
+    [Index("Guid", IsUnique = true)]
     public class Order
     {
         [Required]
@@ -44,20 +46,14 @@ namespace ConsolePizzaShop
         public uint Id { get; set; }
         [Required]
         public int CheckId { get; set; }
-        [Required]
-        public virtual Check Check{ get; set; }
-        [Required]
-        public DateTime CreateDate { get; set; }
+        public Check Check { get; set; }
         [Required]
         public int PizzaId { get; set; }
-
-        [Required]
-        public virtual Pizza Pizza { get; set; }
-
-
+        public Pizza Pizza { get; set; }
     }
 
     // чек с покупки. 
+    [Index("Guid", IsUnique=true)]
     public class Check
     {
         [Required]
@@ -66,10 +62,8 @@ namespace ConsolePizzaShop
         public uint Id { get; set; }
         [Required]
         public int ClientId { get; set; }
-        [Required]
-        public virtual Client Client { get; set; }
-        [Required]
-        public virtual ICollection<Order> OrderCollection { get; set; }
+        public Client Client { get; set; }
+        public ICollection<Order> Orders { get; set; }
         [Required]
         public DateTime CreateDate { get; set; }
         [Required]
@@ -84,7 +78,8 @@ namespace ConsolePizzaShop
     // Ассортимент пицерии
     //--------------------------------
 
-    public class Pizza : Product
+    [Index("Guid", IsUnique = true)]
+    public class Pizza
     {
         [Required]
         public Guid Guid { get; set; }
@@ -94,18 +89,12 @@ namespace ConsolePizzaShop
         public string Name { get; set; }
         [Required]
         public int Price { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 
-    public class Menu : Product
+    //ассортимент 
+    public class Menu : Pizza
     {
-        [Required]
-        public Guid Guid { get; set; }
-        [Key]
-        public uint Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public int Price { get; set; }
         [Required]
         public bool Active { get; set; }
     }
@@ -116,8 +105,8 @@ namespace ConsolePizzaShop
     // Класс клиентов пицерии
     //--------------------------------
 
-
-    public class Client : User
+    [Index("Guid", IsUnique = true)]
+    public class Client
     {
         [Required]
         public Guid Guid { get; set; }
@@ -132,6 +121,7 @@ namespace ConsolePizzaShop
         public bool Active { get; set; }
         [Required]
         public DateTime RegistrDate { get; set; }
+        public ICollection<Check> Checks { get; set; }
     }
 
 

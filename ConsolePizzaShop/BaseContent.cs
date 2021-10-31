@@ -11,9 +11,11 @@ namespace ConsolePizzaShop
     {
         public string DbPath { get; private set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Pizza> Pizzas { get; set; }
+        public DbSet<Menu> Menus { get; set; }
         public DbSet<Check> Checks { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Pizza> Pizzas{ get; set; }
+
 
         //public BaseContent(DbContextOptions<BaseContent> options): base(options)
         public BaseContent()
@@ -28,6 +30,13 @@ namespace ConsolePizzaShop
         // The following configures EF to create a Sqlite database file in the
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite($"Data Source={DbPath}");
+        
+        /*
+        protected override void OnModelCreating (ModelBuilder modelBuilder)
+        {
+
+        }
+        */
 
         /// <summary>
         /// Добавляет новую запись пиццы в таблицу Pizza 
@@ -44,8 +53,8 @@ namespace ConsolePizzaShop
                 Name = name,
             });
             SaveChanges();
-
         }
+
         /// <summary>
         /// регистрирует клиента в таблицу Client
         /// </summary>
@@ -56,14 +65,15 @@ namespace ConsolePizzaShop
 
         public void AddClient(string name, string email,  bool active = true)
         {
-            Clients.Add(new Client 
-            { 
-                Guid = Guid.NewGuid(), 
-                Name = name, 
-                Email = email, 
+            Client client = new Client
+            {
+                Guid = Guid.NewGuid(),
+                Name = name,
+                Email = email,
                 RegistrDate = DateTime.Now,
-                Active = active 
-            });
+                Active = active
+            };
+            Clients.Add(client);
             SaveChanges();
         }
 
@@ -101,17 +111,26 @@ namespace ConsolePizzaShop
             if (paid == true) 
                 payDate = DateTime.Now;
 
-            Checks.Add(new Check
+            Check check = (new Check
             {
                 Guid = Guid.NewGuid(),
-                ClientId = (int)client.Id,
+                //ClientId = (int)client.Id,
                 Client = client,
                 CreateDate = DateTime.Now,
                 Paid = paid,
+
                 CloseDate = payDate,
                 Adress = adress
 
-            }); 
+            });
+            Checks.Add(check);
+
+            Order order;
+            foreach (var p in pizza)
+            {
+                order = new Order {Guid=Guid.NewGuid(), Pizza = p, Check = check };
+                Orders.Add(order);
+            }
             SaveChanges();
         }
 

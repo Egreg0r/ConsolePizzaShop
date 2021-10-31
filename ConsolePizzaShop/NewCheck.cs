@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,14 +42,15 @@ namespace ConsolePizzaShop
 
     }
 
-    public class NewOrder : Order
+    public static class NewOrder 
     {
         /// <summary>
         /// Создание чека.
         /// </summary>
-        public void CreateOrder()
+        public static void CreateCheck()
         {
             using (var db = new BaseContent())
+            //using (var db = baseContent) 
             {
                 var client = db.Clients.Find((uint)1);
 
@@ -70,15 +72,15 @@ namespace ConsolePizzaShop
                     else Console.WriteLine("К сожалению вы должник и не можете заказывать");
                     
 
-                    var check = db.Checks;
+                    var check = db.Checks.Include(c => c.Orders);
                     int sum = 0;
                     foreach (var p in check)
                     {
-                        foreach (var k in p.PizzaCollection)
+                        foreach (var k in p.Orders)
                         {
-                            sum = sum + k.Price;
+                            sum = sum + k.Pizza.Price;
                         }
-                        Console.WriteLine("Клиент {0} заказал {1} пицц на сумму {2}", p.Client.Name, p.PizzaCollection.Count(), sum);
+                        Console.WriteLine("Клиент {0} заказал {1} пицц на сумму {2}", p.Client.Name, p.Orders.Count(), sum);
                     }
 
                 }
@@ -91,7 +93,7 @@ namespace ConsolePizzaShop
         /// </summary>
         /// <param name="id">Client.id</param>
         /// <returns></returns>
-        public bool CanPaid(uint id)
+        public static bool CanPaid(uint id)
         {
             bool l;
             using (var db = new BaseContent())

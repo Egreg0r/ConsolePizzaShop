@@ -18,9 +18,8 @@ namespace ConsolePizzaShop
         public static void Initialize()
         {
             using (var db = new BaseContent())
-               // serviceProvider.GetRequiredService<DbContextOptions<BaseContent>>()))
             {
-                if (db.Pizza.Any())
+                if (db.Pizzas.Any())
                     return; // DB has been seeded
                 Console.WriteLine("Insert Seed in empty bd");
                 db.AddPizza(111, "Тестовая пицца за 111");
