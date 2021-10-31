@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsolePizzaShop", "ConsolePizzaShop\ConsolePizzaShop.csproj", "{0B95BAD3-FB50-4A97-93F7-A17B5306554B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPizzaShop", "WebPizzaShop\WebPizzaShop.csproj", "{AA93113E-A390-4B89-B53A-14102B5893D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B95BAD3-FB50-4A97-93F7-A17B5306554B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B95BAD3-FB50-4A97-93F7-A17B5306554B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B95BAD3-FB50-4A97-93F7-A17B5306554B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B95BAD3-FB50-4A97-93F7-A17B5306554B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA93113E-A390-4B89-B53A-14102B5893D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA93113E-A390-4B89-B53A-14102B5893D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA93113E-A390-4B89-B53A-14102B5893D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA93113E-A390-4B89-B53A-14102B5893D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4FEFAF05-E0E9-4278-B762-331E7E8DB86D}
+	EndGlobalSection
+EndGlobal
