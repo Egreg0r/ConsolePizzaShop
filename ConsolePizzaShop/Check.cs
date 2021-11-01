@@ -79,10 +79,34 @@ namespace ConsolePizzaShop
             }
         }
         
-
-        public void ChecksPaid ()
+        /// <summary>
+        /// Проставление признака оплаты чека. 
+        /// </summary>
+        /// <param name="id">Check.id</param>
+        public void SetChecksIsPaid (int id)
         {
+            using (var db = new BaseContent())
+            {
+                Check check = db.Checks.FirstOrDefault(c => c.Id == id);
+                if (check!= null)
+                {
+                    check.Paid = true;
+                    db.SaveChanges();
+                }
+            }
+        }
 
+        /// <summary>
+        /// Оплата всей задолженности клиента. 
+        /// </summary>
+        /// <param name="clientID"></param>
+        public void AllSetChecksPaid(int clientID)
+        {
+            var client = new Client().GetClientNoPaidCheck(clientID);
+            foreach (var p in client)
+            {
+                SetChecksIsPaid(p.Id);
+            }
         }
 
     }

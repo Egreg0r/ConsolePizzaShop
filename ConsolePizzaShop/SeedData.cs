@@ -58,7 +58,7 @@ namespace ConsolePizzaShop
 
             db = new BaseContent();
             pizzas = new List<Pizza>();
-            pizzas.Add(db.Pizzas.Find(1));
+            pizzas.Add(db.Pizzas.Find(2));
             pizzas.Add(db.Pizzas.Find(2));
             client = db.Clients.Find(1);
             check.CreateCheck(db, client, pizzas);

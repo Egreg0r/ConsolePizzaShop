@@ -62,7 +62,7 @@ namespace ConsolePizzaShop
         /// </summary>
         /// <param name=" clienId">Client.id</param>
 
-        public void GetClientNoPaidCheck(int clienId)
+        public ICollection<Check> GetClientNoPaidCheck(int id)
         {
             using (var db = new BaseContent())
             {
@@ -70,14 +70,8 @@ namespace ConsolePizzaShop
                     .Include(c => c.Orders) 
                         .ThenInclude(o => o.Pizza)
                     .Include (c => c.Client)
-                    .Where(cl => cl.Client.Id == clienId)
+                    .Where(cl => cl.Client.Id == id)
                     .AsNoTracking();
-                // Если нет чеков то выход
-                if (!check.Any())
-                {
-                    Console.WriteLine("Неоплаченных чеков нет");
-                    return;
-                }
                 int sum = 0;
                 foreach (var p in check)
                 {
@@ -91,6 +85,7 @@ namespace ConsolePizzaShop
                     Console.WriteLine("Клиент {0} заказал {1} пицу(ы). Дата заказа {2}. Сумма: {3} ", p.Client.Name, p.Orders.Count(), p.CreateDate, sumord);
                 }
                 Console.WriteLine("Клиент {0}. Общая задолженность на сумму {1}", check.First().Client.Name, sum);
+                return check.ToList();
             }
 
         }
