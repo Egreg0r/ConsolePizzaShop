@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design;
@@ -25,6 +22,8 @@ namespace ConsolePizzaShop
         public string Name { get; set; }
         [Required]
         public int Price { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+
     }
     /*
     public abstract class User
@@ -37,7 +36,7 @@ namespace ConsolePizzaShop
     */
 
     #endregion
-    
+
 
     // ------------------------
     // Чеки
@@ -70,7 +69,7 @@ namespace ConsolePizzaShop
         [Required]
         public int ClientId { get; set; }
         public virtual Client Client { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
         [Required]
         public DateTime CreateDate { get; set; }
         [Required]
@@ -85,15 +84,12 @@ namespace ConsolePizzaShop
     // Ассортимент пицерии
     //--------------------------------
 
-    public class Pizza : Product
+    public partial class Pizza : Product
     {
-        public ICollection<Order> Orders { get; set; }
         [Required]
         public bool Active { get; set; }
 
     }
-
-
 
 
     //--------------------------------
@@ -120,7 +116,4 @@ namespace ConsolePizzaShop
     }
 
 
-    class Model
-    {
-    }
 }

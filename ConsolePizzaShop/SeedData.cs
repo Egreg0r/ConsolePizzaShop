@@ -17,31 +17,53 @@ namespace ConsolePizzaShop
     {
         public static void Initialize()
         {
-            using (var db = new BaseContent())
-            {
-                if (db.Pizzas.Any())
+            var db = new BaseContent();
+            db.Database.EnsureDeleted();
+            // создаем базу данных
+            db.Database.EnsureCreated();
+
+            if (db.Pizzas.Any())
                     return; // DB has been seeded
-                Console.WriteLine("Insert Seed in empty bd");
-                db.AddPizza(111, "Тестовая пицца за 111");
-                db.AddPizza(250, "Тестовая пицца за 250");
-                db.AddClient("Тест норм клиент", "roga@mail.ru");
-                db.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"), true);
-                Console.WriteLine("Seed is insert completed");
 
-                var order = new CheckNew();
+            Console.WriteLine("Insert Seed in empty bd");
 
-                List<Pizza> pizzas = new List<Pizza>();
-                pizzas.Add(db.Pizzas.Find(1));
-                pizzas.Add(db.Pizzas.Find(2));
-                order.CreateCheck(db.Clients.Find(1), pizzas);
 
-                pizzas.Clear();
+            Pizza pizza = new Pizza();
+            pizza.AddPizza(111, "Тестовая пицца за 111");
+            pizza.AddPizza(250, "Тестовая пицца за 250");
+            Console.WriteLine("Add pizza compleeted");
 
-                pizzas.Add(db.Pizzas.Find(1));
-                pizzas.Add(db.Pizzas.Find(1));
-                order.CreateCheck(db.Clients.Find(2), pizzas);
+            Client client = new Client();
+            client.AddClient("Тест норм клиент", "roga@mail.ru");
+            client.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"), true);
+            Console.WriteLine("Add Client compleeted");
 
-            }
+            var check = new Check();
+            List<Pizza> pizzas;
+
+            db = new BaseContent();
+            pizzas = new List<Pizza>();
+            pizzas.Add(db.Pizzas.Find(1));
+            pizzas.Add(db.Pizzas.Find(2));
+            client = db.Clients.Find(1);
+            check.CreateCheck(db, client, pizzas);
+
+            db = new BaseContent();
+            pizzas = new List<Pizza>();
+            pizzas.Add(db.Pizzas.Find(1));
+            pizzas.Add(db.Pizzas.Find(1));
+            client = db.Clients.Find(2);
+            check.CreateCheck(db, client, pizzas);
+            Console.WriteLine("Seed is insert completed");
+
+            db = new BaseContent();
+            pizzas = new List<Pizza>();
+            pizzas.Add(db.Pizzas.Find(1));
+            pizzas.Add(db.Pizzas.Find(2));
+            client = db.Clients.Find(1);
+            check.CreateCheck(db, client, pizzas);
+
+
         }
 
 
