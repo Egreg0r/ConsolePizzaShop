@@ -11,7 +11,6 @@ namespace ConsolePizzaShop
     {
         public string DbPath { get; private set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Menu> Menus { get; set; }
         public DbSet<Check> Checks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Pizza> Pizzas{ get; set; }
@@ -21,7 +20,7 @@ namespace ConsolePizzaShop
         public BaseContent()
         {
             DbPath = $"./pizzashop.db";
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             // создаем базу данных
             Database.EnsureCreated();
 
@@ -97,43 +96,6 @@ namespace ConsolePizzaShop
             });
             SaveChanges();
         }
-
-        /// <summary>
-        /// Создание чека. 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="client"></param>
-        /// <param name="pizza"></param>
-        /// <param name="paid"></param>
-        public void AddCheck(Client client, ICollection<Pizza> pizza , string adress = "Самовывоз", bool paid = false )
-        {
-            DateTime payDate = DateTime.Parse("01.01.2021");
-            if (paid == true) 
-                payDate = DateTime.Now;
-
-            Check check = (new Check
-            {
-                Guid = Guid.NewGuid(),
-                //ClientId = (int)client.Id,
-                Client = client,
-                CreateDate = DateTime.Now,
-                Paid = paid,
-
-                CloseDate = payDate,
-                Adress = adress
-
-            });
-            Checks.Add(check);
-
-            Order order;
-            foreach (var p in pizza)
-            {
-                order = new Order {Guid=Guid.NewGuid(), Pizza = p, Check = check };
-                Orders.Add(order);
-            }
-            SaveChanges();
-        }
-
 
     }
 

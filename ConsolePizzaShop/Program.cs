@@ -18,7 +18,10 @@ namespace ConsolePizzaShop
 
             }
             SeedData.Initialize();
-            NewOrder.CreateCheck();
+            Check check = new Check();
+            Client client = new Client();
+            
+            client.GetClientNoPaidCheck(1);
 
 
 

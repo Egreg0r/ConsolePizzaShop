@@ -11,17 +11,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConsolePizzaShop
 {
-    /*
+
     #region abstact class
-    
+
+    [Index("Guid", IsUnique = true)]
     public abstract class Product
     {
+        [Required]
         public Guid Guid { get; set; }
-        public uint Id { get; set; }
+        [Key]
+        public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public int Price { get; set; }
     }
-
+    /*
     public abstract class User
     {
         public Guid Guid { get; set; }
@@ -29,8 +34,10 @@ namespace ConsolePizzaShop
         public string Name { get; set; }
         public string Email { get; set; }
     }
-    #endregion
     */
+
+    #endregion
+    
 
     // ------------------------
     // Чеки
@@ -43,26 +50,26 @@ namespace ConsolePizzaShop
         [Required]
         public Guid Guid { get; set; }
         [Key]
-        public uint Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public int CheckId { get; set; }
         public Check Check { get; set; }
         [Required]
         public int PizzaId { get; set; }
-        public Pizza Pizza { get; set; }
+        public virtual Pizza Pizza { get; set; }
     }
 
     // чек с покупки. 
     [Index("Guid", IsUnique=true)]
-    public class Check
+    public partial class Check
     {
         [Required]
         public Guid Guid { get; set; }
         [Key]
-        public uint Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
         public ICollection<Order> Orders { get; set; }
         [Required]
         public DateTime CreateDate { get; set; }
@@ -78,26 +85,14 @@ namespace ConsolePizzaShop
     // Ассортимент пицерии
     //--------------------------------
 
-    [Index("Guid", IsUnique = true)]
-    public class Pizza
+    public class Pizza : Product
     {
-        [Required]
-        public Guid Guid { get; set; }
-        [Key]
-        public uint Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public int Price { get; set; }
         public ICollection<Order> Orders { get; set; }
-    }
-
-    //ассортимент 
-    public class Menu : Pizza
-    {
         [Required]
         public bool Active { get; set; }
+
     }
+
 
 
 
@@ -106,12 +101,12 @@ namespace ConsolePizzaShop
     //--------------------------------
 
     [Index("Guid", IsUnique = true)]
-    public class Client
+    public partial class Client
     {
         [Required]
         public Guid Guid { get; set; }
         [Key]
-        public uint Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -121,7 +116,7 @@ namespace ConsolePizzaShop
         public bool Active { get; set; }
         [Required]
         public DateTime RegistrDate { get; set; }
-        public ICollection<Check> Checks { get; set; }
+        public virtual ICollection<Check> Checks { get; set; }
     }
 
 

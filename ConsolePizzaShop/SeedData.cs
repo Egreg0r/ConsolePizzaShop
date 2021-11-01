@@ -27,6 +27,20 @@ namespace ConsolePizzaShop
                 db.AddClient("Тест норм клиент", "roga@mail.ru");
                 db.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"), true);
                 Console.WriteLine("Seed is insert completed");
+
+                var order = new CheckNew();
+
+                List<Pizza> pizzas = new List<Pizza>();
+                pizzas.Add(db.Pizzas.Find(1));
+                pizzas.Add(db.Pizzas.Find(2));
+                order.CreateCheck(db.Clients.Find(1), pizzas);
+
+                pizzas.Clear();
+
+                pizzas.Add(db.Pizzas.Find(1));
+                pizzas.Add(db.Pizzas.Find(1));
+                order.CreateCheck(db.Clients.Find(2), pizzas);
+
             }
         }
 
