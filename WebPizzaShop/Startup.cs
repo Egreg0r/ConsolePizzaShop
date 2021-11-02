@@ -20,6 +20,12 @@ namespace WebPizzaShop
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            using (var db = new BaseContent())
+            {
+                db.Database.EnsureCreated();
+                //SeedData.Initialize();
+            }
+
         }
 
         public IConfiguration Configuration { get; }
@@ -27,13 +33,16 @@ namespace WebPizzaShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            // Add framework services.
+            services.AddMvc();
+
+            services.AddEntityFrameworkSqlite()
+            .AddDbContext<BaseContent>();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<BaseContent>();
             services.AddControllersWithViews();
         }
 
