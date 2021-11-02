@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebPizzaShop.Data;
+using System.ComponentModel.DataAnnotations;
+
+//--------------------------------
+// Ассортимент пицерии
+//--------------------------------
+
 
 namespace WebPizzaShop.Models
 {
-    public partial class Pizza: Product
+    public class Pizza : Product
     {
+        [Required]
+        [Display(Name = "Активна")]
+        public bool Active { get; set; }
+        
+
+
         /// <summary>
         /// Добавляет новую запись пиццы в таблицу Pizza 
         /// </summary>
@@ -21,11 +32,11 @@ namespace WebPizzaShop.Models
             {
                 db.Pizzas.Add(new Pizza
                 {
-                    Guid = Guid.NewGuid(),
                     Price = price,
                     Name = name,
-                    Active = active
-                });
+                    Active = active,
+                    CreateDate = DateTime.Now
+                }) ;
                 db.SaveChanges();
             }
         }

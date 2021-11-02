@@ -5,11 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebPizzaShop.Data;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
+
 
 namespace WebPizzaShop.Models
 {
-    public partial class Client
+    //--------------------------------
+    // Класс клиентов пицерии
+    //--------------------------------
+
+    public class Client : BaseId
     {
+        [Required(ErrorMessage = "Введите имя клиента"), Display(Name ="Имя клиента")]
+        public string Name { get; set; }
+        [Required(ErrorMessage = "Введите Email")]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required, Display(Name = "Дата регистраци")]
+        public DateTime RegistrDate { get; set; }
+        public virtual ICollection<Check> Checks { get; set; }
+    
+
         /// <summary>
         /// регистрирует клиента в таблицу Client
         /// </summary>
@@ -18,17 +36,15 @@ namespace WebPizzaShop.Models
         /// <param name="email"></param>
         /// <param name="active"></param>
 
-        public void AddClient(string name, string email, bool active = true)
+        public void AddClient(string name, string email)
         {
             using (var db = new BaseContent())
             {
                 Client client = new Client
                 {
-                    Guid = Guid.NewGuid(),
                     Name = name,
                     Email = email,
                     RegistrDate = DateTime.Now,
-                    Active = active
                 };
                 db.Clients.Add(client);
                 db.SaveChanges();
@@ -43,17 +59,15 @@ namespace WebPizzaShop.Models
         /// <param name="regdate"></param>
         /// <param name="email"></param>
         /// <param name="active"></param>
-        public void AddClient(string name, string email, DateTime regdate, bool active = true)
+        public void AddClient(string name, string email, DateTime regdate)
         {
             using (var db = new BaseContent())
             {
                 db.Clients.Add(new Client
                 {
-                    Guid = Guid.NewGuid(),
                     Name = name,
                     Email = email,
                     RegistrDate = regdate,
-                    Active = active
                 });
                 db.SaveChanges();
             }

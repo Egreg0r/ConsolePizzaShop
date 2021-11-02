@@ -30,13 +30,13 @@ namespace WebPizzaShop.Data
 
 
             Pizza pizza = new Pizza();
-            pizza.AddPizza(111, "Тестовая пицца за 111");
-            pizza.AddPizza(250, "Тестовая пицца за 250");
+            pizza.AddPizza(11124, "Тестовая пицца за 11124");
+            pizza.AddPizza(25023, "Тестовая пицца за 25023");
             Console.WriteLine("Add pizza compleeted");
 
             Client client = new Client();
             client.AddClient("Тест норм клиент", "roga@mail.ru");
-            client.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"), true);
+            client.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"));
             Console.WriteLine("Add Client compleeted");
 
             var check = new Check();
@@ -46,23 +46,20 @@ namespace WebPizzaShop.Data
             pizzas = new List<Pizza>();
             pizzas.Add(db.Pizzas.Find(1));
             pizzas.Add(db.Pizzas.Find(2));
-            client = db.Clients.Find(1);
-            check.CreateCheck(db, client, pizzas);
+            check.CreateCheck(db, 1, pizzas);
 
             db = new BaseContent();
             pizzas = new List<Pizza>();
             pizzas.Add(db.Pizzas.Find(1));
             pizzas.Add(db.Pizzas.Find(1));
-            client = db.Clients.Find(2);
-            check.CreateCheck(db, client, pizzas);
+            check.CreateCheck(db, 2, pizzas);
             Console.WriteLine("Seed is insert completed");
 
             db = new BaseContent();
             pizzas = new List<Pizza>();
             pizzas.Add(db.Pizzas.Find(2));
             pizzas.Add(db.Pizzas.Find(2));
-            client = db.Clients.Find(1);
-            check.CreateCheck(db, client, pizzas);
+            check.CreateCheck(db, 1, pizzas);
 
 
         }

@@ -20,8 +20,7 @@ namespace WebPizzaShop.Models
         public BaseContent(DbContextOptions<BaseContent> options)
                     : base(options)
         {
-            DbPath = $"./pizzashop.db";
-
+            //DbPath = $"./pizzashop.db";
         }
 
 
