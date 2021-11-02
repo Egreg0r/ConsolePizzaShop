@@ -21,8 +21,6 @@ namespace WebPizzaShop.Models
                     : base(options)
         {
             DbPath = $"./pizzashop.db";
-            // создаем базу данных
-            Database.EnsureCreated();
 
         }
 
