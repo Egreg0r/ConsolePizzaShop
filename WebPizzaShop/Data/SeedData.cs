@@ -21,7 +21,7 @@ namespace WebPizzaShop.Data
             var db = new BaseContent();
             //db.Database.EnsureDeleted();
             // создаем базу данных
-            db.Database.EnsureCreated();
+            //db.Database.EnsureCreated();
 
             if (db.Pizzas.Any())
                     return; // DB has been seeded

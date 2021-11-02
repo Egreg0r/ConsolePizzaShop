@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebPizzaShop.Data;
+using WebPizzaShop.Models;
 
 namespace WebPizzaShop
 {
@@ -25,9 +25,9 @@ namespace WebPizzaShop
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<BaseContent>();
-                    context.Database.EnsureCreated();
-                    SeedData.Initialize();
+                    //var context = services.GetRequiredService<BaseContent>();
+                    //context.Database.EnsureCreated();
+                    //SeedData.Initialize();
                     // DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)

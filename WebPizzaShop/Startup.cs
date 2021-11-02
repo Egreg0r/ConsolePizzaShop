@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebPizzaShop.Data;
+using WebPizzaShop.Models;
+
 
 namespace WebPizzaShop
 {
@@ -23,7 +25,7 @@ namespace WebPizzaShop
             using (var db = new BaseContent())
             {
                 db.Database.EnsureCreated();
-                //SeedData.Initialize();
+                SeedData.Initialize();
             }
 
         }

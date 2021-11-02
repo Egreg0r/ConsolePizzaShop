@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using WebPizzaShop.Models;
 
-namespace WebPizzaShop.Data
+namespace WebPizzaShop.Models
 {
     public class BaseContent : DbContext
     {
