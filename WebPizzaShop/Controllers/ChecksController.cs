@@ -12,7 +12,6 @@ namespace WebPizzaShop.Controllers
     public class ChecksController : Controller
     {
         private readonly BaseContent _context;
-
         public ChecksController(BaseContent context)
         {
             _context = context;
@@ -24,12 +23,11 @@ namespace WebPizzaShop.Controllers
             var baseContent = _context.Checks
                 .Include(c => c.Client)
                 .Include(c => c.Orders)
-                    .ThenInclude(o => o.Pizza)
                 .AsNoTracking();
             return View(await baseContent.ToListAsync());
         }
 
-        // GET: Checks/Details/5
+        // GET: Checks/Details/
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,14 +44,22 @@ namespace WebPizzaShop.Controllers
             {
                 return NotFound();
             }
-
+            var s = check.Orders.Sum(ord => ord.Pizza.Price).ToString();
+            
+            //вывод суммы с переводом в рубли.
+            ViewData["SumCheck"] = s.Insert(s.Length - 2, ",");
             return View(check);
         }
 
         // GET: Checks/Create
         public IActionResult Create()
         {
+            var check = _context.Checks
+               .Include(c => c.Orders)
+                   .ThenInclude(ord => ord.Pizza)
+               .Include(c => c.Client);
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email");
+            ViewData["PizzaId"] = new SelectList(_context.Pizzas, "Id", "Name");
             return View();
         }
 
@@ -65,6 +71,8 @@ namespace WebPizzaShop.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (check.Paid == true)
+                    check.CloseDate = DateTime.Now;
                 _context.Add(check);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

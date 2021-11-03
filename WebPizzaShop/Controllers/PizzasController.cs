@@ -148,5 +148,6 @@ namespace WebPizzaShop.Controllers
         {
             return _context.Pizzas.Any(e => e.Id == id);
         }
+
     }
 }

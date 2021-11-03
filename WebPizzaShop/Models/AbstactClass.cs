@@ -21,8 +21,10 @@ namespace WebPizzaShop.Models
         public virtual ICollection<Order> Orders { get; set; }
         [Display(Name = "Дата создания")]
         [Required(ErrorMessage = "Дата начала продаж не указана")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime CreateDate { get; set; }
         [Display(Name = "Дата закрытия")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime CloseDate { get; set; }
 
     }

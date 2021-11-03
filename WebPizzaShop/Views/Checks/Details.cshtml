@@ -59,16 +59,16 @@
             @Html.DisplayFor(model => model.CloseDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Orders)
+            Сумма
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Orders.Sum(ord => ord.Pizza.Price))
+            @ViewData["SumCheck"] руб.
         </dd>
 
 
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
+    <a asp-action="Index">Назад в список</a>
 </div>

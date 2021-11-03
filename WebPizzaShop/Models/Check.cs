@@ -24,10 +24,12 @@ namespace WebPizzaShop.Models
         public string Adress { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         [Required, Display(Name = "Дата заказа")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime CreateDate { get; set; }
         [Required, Display(Name = "Оплачен")]
         public bool Paid { get; set; }
         [Display(Name = "Дата оплаты")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime CloseDate { get; set; }
 
     
@@ -72,19 +74,31 @@ namespace WebPizzaShop.Models
         {
             using (db)
             {
-
-                DateTime payDate = DateTime.Parse("01.01.2021");
+                Check check;
                 if (paid == true)
-                    payDate = DateTime.Now;
-
-                Check check = (new Check
                 {
-                    Client = db.Clients.Find(clientID),
-                    CreateDate = DateTime.Now,
-                    Paid = paid,
-                    CloseDate = payDate,
-                    Adress = adress,
-                });
+                    var payDate = DateTime.Now;
+
+                    check = (new Check
+                    {
+                        Client = db.Clients.Find(clientID),
+                        CreateDate = DateTime.Now,
+                        Paid = paid,
+                        CloseDate = payDate,
+                        Adress = adress,
+                    });
+                }
+                else
+                {
+                    check = (new Check
+                    {
+                        Client = db.Clients.Find(clientID),
+                        CreateDate = DateTime.Now,
+                        Paid = paid,
+                        Adress = adress,
+                    });
+
+                }
                 db.Checks.Add(check);
 
                 List<Order> orders = new List<Order>();

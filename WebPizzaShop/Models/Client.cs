@@ -24,6 +24,7 @@ namespace WebPizzaShop.Models
         [EmailAddress]
         public string Email { get; set; }
         [Required, Display(Name = "Дата регистраци")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime RegistrDate { get; set; }
         public virtual ICollection<Check> Checks { get; set; }
     
