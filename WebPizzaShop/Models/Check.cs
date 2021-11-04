@@ -32,7 +32,7 @@ namespace WebPizzaShop.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
         public DateTime CloseDate { get; set; }
 
-    
+
         /// <summary>
         /// Генерация нового заказа
         /// </summary>
@@ -62,7 +62,7 @@ namespace WebPizzaShop.Models
                 else Console.WriteLine("К сожалению вы должник и не можете заказывать");
             }
         }
-        
+
         /// <summary>
         /// Создание чека. 
         /// </summary>
@@ -114,17 +114,17 @@ namespace WebPizzaShop.Models
                 db.SaveChanges();
             }
         }
-        
+
         /// <summary>
         /// Проставление признака оплаты чека. 
         /// </summary>
         /// <param name="id">Check.id</param>
-        public void SetChecksIsPaid (int id)
+        public void SetChecksIsPaid(int id)
         {
             using (var db = new BaseContent())
             {
                 Check check = db.Checks.FirstOrDefault(c => c.Id == id);
-                if (check!= null)
+                if (check != null)
                 {
                     check.Paid = true;
                     db.SaveChanges();
@@ -136,9 +136,10 @@ namespace WebPizzaShop.Models
         /// Оплата всей задолженности клиента. 
         /// </summary>
         /// <param name="clientID"></param>
-        public void AllSetChecksPaid(int clientID)
+        public void AllSetChecksPaid(int clientID, BaseContent baseContent)
         {
-            var client = new Client().GetClientNoPaidCheck(clientID);
+
+            var client = GetClientNoPaidCheck(clientID);
             foreach (var p in client)
             {
                 SetChecksIsPaid(p.Id);
@@ -150,9 +151,9 @@ namespace WebPizzaShop.Models
         /// </summary>
         /// <param name="checkId"></param>
         /// <returns></returns>
-        public int SumCheck (int checkId, BaseContent db)
+        public int SumCheck(int checkId, BaseContent baseContent)
         {
-            using (db)
+            using (var db = new BaseContent())
             {
                 var check = db.Checks
                     .Include(ch => ch.Orders)
@@ -166,6 +167,37 @@ namespace WebPizzaShop.Models
 
         }
 
-    }
+        /// <summary>
+        /// Возвращает список неоплаченных счетов
+        /// </summary>
+        /// <param name=" clienId">Client.id</param>
 
+        public ICollection<Check> GetClientNoPaidCheck(int id)
+        {
+            using (var db = new BaseContent())
+            {
+                var check = db.Checks
+                    .Include(c => c.Orders)
+                        .ThenInclude(o => o.Pizza)
+                    .Include(c => c.Client)
+                    .Where(cl => cl.Client.Id == id)
+                    .AsNoTracking();
+                int sum = 0;
+                foreach (var p in check)
+                {
+                    int sumord = 0;
+                    foreach (var k in p.Orders)
+                    {
+                        if (p.Id == k.CheckId)
+                            sumord = sumord + k.Pizza.Price;
+                    }
+                    sum = sum + sumord;
+                }
+                return check.ToList();
+            }
+
+
+        }
+
+    }
 }

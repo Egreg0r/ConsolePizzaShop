@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebPizzaShop.Models;
+using WebPizzaShop.Data;
 
 namespace WebPizzaShop.Controllers
 {
@@ -24,7 +25,7 @@ namespace WebPizzaShop.Controllers
             return View(await _context.Clients.ToListAsync());
         }
 
-        // GET: Clients/Details/5
+        // GET: Clients/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,7 +39,17 @@ namespace WebPizzaShop.Controllers
             {
                 return NotFound();
             }
+            // чек и его сумма
+            var checkWhithSum = new List<(string id, string date, string adress, string sum)>();
+            Check check = new Check();
+            //var cheksClient = check.GetClientNoPaidCheck(client.Id);
+            foreach(var ch in check.GetClientNoPaidCheck(client.Id))
+            {
+                var k = ch.SumCheck(ch.Id, _context).IntToRub();
+                checkWhithSum.Add((ch.Id.ToString(), ch.CreateDate.ToString("dd.MM.yyyy hh:mm"), ch.Adress, k));
+            }
 
+            ViewBag.cheks = checkWhithSum;
             return View(client);
         }
 

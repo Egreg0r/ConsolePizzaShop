@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebPizzaShop.Models;
+using WebPizzaShop.Data;
 
 namespace WebPizzaShop.Controllers
 {
@@ -36,19 +37,25 @@ namespace WebPizzaShop.Controllers
             }
 
             var check = await _context.Checks
-                .Include(c => c.Orders)
-                    .ThenInclude(ord => ord.Pizza)
                 .Include(c => c.Client)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (check == null)
             {
                 return NotFound();
             }
-            var s = check.Orders.Sum(ord => ord.Pizza.Price).ToString();
             
-            //вывод суммы с переводом в рубли.
-            ViewData["SumCheck"] = s.Insert(s.Length - 2, ",");
-            ViewBag.pizzas = Pizza.ListPizzasInCheck(check.Id, _context);
+            var pizzaz = new Dictionary<string, string>();
+            var pizzaCollection = Pizza.ListPizzasInCheck(check.Id, _context);
+            foreach (var p in pizzaCollection)
+            {
+                pizzaz.Add(p.Name, p.Price.IntToRub());
+            }
+            
+            //вывод суммы чека
+            ViewData["SumCheck"] = pizzaCollection.Sum(p => p.Price).IntToRub();
+
+            // Список пиц в чеке
+            ViewBag.pizzas = pizzaz;
             return View(check);
         }
 
@@ -139,7 +146,6 @@ namespace WebPizzaShop.Controllers
             return _context.Checks.Any(e => e.Id == id);
         }
 
-        // Get
 
 
 
