@@ -10,12 +10,13 @@ namespace WebPizzaShop.Models
 
     #region abstact class
 
-    public abstract class Product : BaseId
+    public abstract class Product : IdForBase
     {
         [Required(ErrorMessage = "Введите название продукта")]
         [Display(Name = "Название")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Ведите цену")]
+        [Range(1,1000000, ErrorMessage ="Недопустимая цена")]
         [Display(Name = "Цена")]
         public int Price { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
@@ -34,9 +35,9 @@ namespace WebPizzaShop.Models
     /// </summary>
 
     [Index("Guid", IsUnique = true)]
-    public abstract class BaseId
+    public abstract class IdForBase
     {
-        public BaseId()
+        public IdForBase()
         {
             Guid = Guid.NewGuid();
         }

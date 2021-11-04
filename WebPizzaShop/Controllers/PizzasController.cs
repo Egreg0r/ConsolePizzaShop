@@ -18,10 +18,12 @@ namespace WebPizzaShop.Controllers
             _context = context;
         }
 
+        #region Index
+
         // GET: Pizzas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pizzas.ToListAsync());
+            return View(await _context.Pizzas.OrderByDescending(p => p.Active).ToListAsync());
         }
 
         // GET: Pizzas/Details
@@ -41,7 +43,9 @@ namespace WebPizzaShop.Controllers
 
             return View(pizza);
         }
+        #endregion
 
+        #region Create
         // GET: Pizzas/Create
         public IActionResult Create()
         {
@@ -61,7 +65,9 @@ namespace WebPizzaShop.Controllers
             }
             return View(pizza);
         }
+        #endregion
 
+        #region Edit
         // GET: Pizzas/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
@@ -110,7 +116,9 @@ namespace WebPizzaShop.Controllers
             }
             return View(pizza);
         }
+        #endregion
 
+        #region Delete
         // GET: Pizzas/Delete
         public async Task<IActionResult> Delete(int? id)
         {
@@ -141,6 +149,7 @@ namespace WebPizzaShop.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
         private bool PizzaExists(int id)
         {

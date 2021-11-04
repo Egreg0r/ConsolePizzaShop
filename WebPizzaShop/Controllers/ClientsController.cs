@@ -19,11 +19,14 @@ namespace WebPizzaShop.Controllers
             _context = context;
         }
 
+
+        #region Index
+
         // GET: Clients
         public async Task<IActionResult> Index()
         {
 
-            return View(await _context.Clients.ToListAsync());
+            return View(await _context.Clients.OrderBy(p => p.Name).ToListAsync());
         }
 
         // GET: Clients/Details
@@ -51,6 +54,7 @@ namespace WebPizzaShop.Controllers
             }
 
             ViewData["Credit"] = credit.IntToRub();
+            if (!checkWhithSum.Any()) ViewData["Disabled"] = "disabled";
             ViewBag.cheks = checkWhithSum;
             return View(client);
         }
@@ -66,6 +70,9 @@ namespace WebPizzaShop.Controllers
             //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
+
+        #region Create
 
         // GET: Clients/Create
         public IActionResult Create()
@@ -81,13 +88,16 @@ namespace WebPizzaShop.Controllers
         {
             if (ModelState.IsValid)
             {
+                client.RegistrDate = DateTime.Now;
                 _context.Add(client);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
         }
+        #endregion
 
+        #region Edit
         // GET: Clients/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
@@ -137,9 +147,11 @@ namespace WebPizzaShop.Controllers
             return View(client);
         }
 
+        #endregion
 
+        #region Delete
 
-        // GET: Clients/Delete/5
+        // GET: Clients/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -157,7 +169,7 @@ namespace WebPizzaShop.Controllers
             return View(client);
         }
 
-        // POST: Clients/Delete/5
+        // POST: Clients/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -167,7 +179,16 @@ namespace WebPizzaShop.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        // Проверка на  уникальность Email
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult CheckEmail(string email)
+        {
+            if (_context.Clients.Where(cl => cl.Email == email).Any())
+                return Json(false);
+            return Json(true);
+        }
 
         #region method
 
@@ -188,6 +209,7 @@ namespace WebPizzaShop.Controllers
                 if (check != null)
                 {
                     check.Paid = true;
+                    check.CloseDate = DateTime.Now;
                     await db.SaveChangesAsync();
                 }
             }

@@ -22,23 +22,20 @@
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Orders" class="control-label"></label>
-                <select asp-for="Orders" class="form-control" asp-items="ViewBag.PizzaId"></select>
-                <input type="number" name="pizzcol" value="1" />
+                <label asp-for="@ViewBag.pizzaId.Name" class="control-label"></label>
+                <select asp-for="ClientId" class="form-control" asp-items="ViewBag.pizzaId"></select>
+                <input type="number" name="pizcol" value="1" min="1" />
             </div>
 
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Paid" /> @Html.DisplayNameFor(model => model.Paid)
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" name="Create" value="Создать" class="btn btn-primary" />
+                <input type="hidden" asp-for="Orders" />
+
             </div>
         </form>
     </div>

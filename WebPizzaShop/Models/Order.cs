@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebPizzaShop.Models
 {
-    public class Order : BaseId
+    public class Order : IdForBase
     {
         [Required]
         public int CheckId { get; set; }

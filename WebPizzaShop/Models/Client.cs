@@ -8,6 +8,7 @@ using WebPizzaShop.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace WebPizzaShop.Models
@@ -16,12 +17,14 @@ namespace WebPizzaShop.Models
     // Класс клиентов пицерии
     //--------------------------------
 
-    public class Client : BaseId
+    public class Client : IdForBase
     {
         [Required(ErrorMessage = "Введите имя клиента"), Display(Name ="Имя клиента")]
+        [MinLength(3, ErrorMessage ="Имя должно быть не менее 3 символов")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Введите Email")]
         [EmailAddress]
+        [Remote(action: "CheckEmail", controller: "Clients", ErrorMessage = "Email уже используется")]
         public string Email { get; set; }
         [Required, Display(Name = "Дата регистраци")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
@@ -80,7 +83,7 @@ namespace WebPizzaShop.Models
         /// </summary>
         /// <param name="id">Client.id</param>
         /// <returns></returns>
-        public bool CanPaid(int id)
+        public static bool CanPaid(int id)
         {
             bool l;
             using (var db = new BaseContent())

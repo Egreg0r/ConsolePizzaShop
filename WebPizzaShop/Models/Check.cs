@@ -15,7 +15,7 @@ namespace WebPizzaShop.Models
     // ------------------------
 
     // чек с покупки. 
-    public class Check : BaseId
+    public class Check : IdForBase
     {
         [Required]
         public int ClientId { get; set; }
@@ -30,38 +30,8 @@ namespace WebPizzaShop.Models
         public bool Paid { get; set; }
         [Display(Name = "Дата оплаты")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy hh:mm}", ApplyFormatInEditMode = true)]
-        public DateTime CloseDate { get; set; }
+        public DateTime? CloseDate { get; set; }
 
-
-        /// <summary>
-        /// Генерация нового заказа
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="pizzasId"></param>
-        /// <param name="isPaid"></param>
-        public void CreateCheck(BaseContent db, int clientID, ICollection<Pizza> pizzas, bool isPaid = false)
-        {
-            using (db)
-            {
-                Client client = db.Clients.Find(clientID);
-                Console.WriteLine("Client " + client.Name);
-                //Проверка на не пустой список заказа
-                if (!pizzas.Any())
-                {
-                    Console.WriteLine("Вы ничего не заказали");
-                    return;
-                }
-                Console.WriteLine("Клиент {0} заказывает {1}", client.Name, string.Join(", ", pizzas.Select(p => p.Name).ToArray()));
-
-                //Производим заказ если клиент может это сделать. 
-                if (client.CanPaid(clientID))
-                {
-                    addCheck(db, clientID, pizzas, paid: isPaid);
-                    Console.WriteLine("Заказ оформлен");
-                }
-                else Console.WriteLine("К сожалению вы должник и не можете заказывать");
-            }
-        }
 
         /// <summary>
         /// Создание чека. 
@@ -70,7 +40,7 @@ namespace WebPizzaShop.Models
         /// <param name="client"></param>
         /// <param name="pizza"></param>
         /// <param name="paid"></param>
-        private void addCheck(BaseContent db, int clientID, ICollection<Pizza> pizza, string adress = "Самовывоз", bool paid = false)
+        public static void addCheck(BaseContent db, int clientID, List<int> pizza, string adress = "Самовывоз", bool paid = false)
         {
             using (db)
             {
@@ -104,14 +74,15 @@ namespace WebPizzaShop.Models
                 List<Order> orders = new List<Order>();
                 foreach (var p in pizza)
                 {
+                    
                     orders.Add(new Order
                     {
-                        Pizza = p,
+                        Pizza = db.Pizzas.Find(p),
                         Check = check
                     });
                 }
                 db.Orders.AddRange(orders);
-                db.SaveChanges();
+                //db.SaveChanges();
             }
         }
 

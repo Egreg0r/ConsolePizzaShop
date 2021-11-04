@@ -86,7 +86,7 @@
     </table>
     <h4> Общая задолженность @ViewData["Credit"] руб.</h4>
     <form asp-action="Paid">
-        <input type="submit" name="Paid" value="Оплатить все" class="btn btn-primary" />
+        <input type="submit" name="Paid" value="Оплатить все" class="btn btn-primary"  disabled="@ViewData["Disabled"]"/>
         <input type="hidden" asp-for="Id" />
     </form>
 </div>

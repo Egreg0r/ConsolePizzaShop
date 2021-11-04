@@ -19,10 +19,6 @@ namespace WebPizzaShop.Data
         public static void Initialize()
         {
             var db = new BaseContent();
-            //db.Database.EnsureDeleted();
-            // создаем базу данных
-            //db.Database.EnsureCreated();
-
             if (db.Pizzas.Any())
                     return; // DB has been seeded
 
@@ -30,36 +26,28 @@ namespace WebPizzaShop.Data
 
 
             Pizza pizza = new Pizza();
-            pizza.AddPizza(11124, "Тестовая пицца за 11124");
-            pizza.AddPizza(25023, "Тестовая пицца за 25023");
-            Console.WriteLine("Add pizza compleeted");
+            pizza.AddPizza(11124, "Тестовая пицца за 100,24");
+            pizza.AddPizza(25023, "Тестовая пицца за 250,23");
+            pizza.AddPizza(9, "Тестовая пицца за 0,09");
 
             Client client = new Client();
             client.AddClient("Тест норм клиент", "roga@mail.ru");
             client.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"));
-            Console.WriteLine("Add Client compleeted");
 
-            var check = new Check();
-            List<Pizza> pizzas;
+            List<int> pizzas;
 
             db = new BaseContent();
-            pizzas = new List<Pizza>();
-            pizzas.Add(db.Pizzas.Find(1));
-            pizzas.Add(db.Pizzas.Find(2));
-            check.CreateCheck(db, 1, pizzas);
+            pizzas = new List<int> {1,2};
+            pizzas.Add(2);
+            Check.addCheck(db, 1, pizzas);
 
             db = new BaseContent();
-            pizzas = new List<Pizza>();
-            pizzas.Add(db.Pizzas.Find(1));
-            pizzas.Add(db.Pizzas.Find(1));
-            check.CreateCheck(db, 2, pizzas);
-            Console.WriteLine("Seed is insert completed");
+            pizzas = new List<int> {2,3,1 };
+            Check.addCheck(db, 2, pizzas);
 
             db = new BaseContent();
-            pizzas = new List<Pizza>();
-            pizzas.Add(db.Pizzas.Find(2));
-            pizzas.Add(db.Pizzas.Find(2));
-            check.CreateCheck(db, 1, pizzas);
+            pizzas = new List<int> {1,1,2,2 };
+            Check.addCheck(db, 1, pizzas);
 
 
         }

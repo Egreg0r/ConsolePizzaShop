@@ -18,15 +18,21 @@ namespace WebPizzaShop.Controllers
             _context = context;
         }
 
+        #region Index
+
         // GET: Checks
         public async Task<IActionResult> Index()
         {
             var baseContent = _context.Checks
                 .Include(c => c.Client)
                 .Include(c => c.Orders)
+                .OrderByDescending(c => c.CreateDate)
                 .AsNoTracking();
             return View(await baseContent.ToListAsync());
         }
+        #endregion
+
+        #region Details
 
         // GET: Checks/Details/
         public async Task<IActionResult> Details(int? id)
@@ -44,11 +50,11 @@ namespace WebPizzaShop.Controllers
                 return NotFound();
             }
             
-            var pizzaz = new Dictionary<string, string>();
+            List<(string, string)> pizzaz = new List<(string, string)>();
             var pizzaCollection = Pizza.ListPizzasInCheck(check.Id, _context);
             foreach (var p in pizzaCollection)
             {
-                pizzaz.Add(p.Name, p.Price.IntToRub());
+                pizzaz.Add((p.Name, p.Price.IntToRub()));
             }
             
             //вывод суммы чека
@@ -58,16 +64,18 @@ namespace WebPizzaShop.Controllers
             ViewBag.pizzas = pizzaz;
             return View(check);
         }
+        #endregion
 
+        #region Create
         // GET: Checks/Create
         public IActionResult Create()
         {
-            var check = _context.Checks
-               .Include(c => c.Orders)
-                   .ThenInclude(ord => ord.Pizza)
-               .Include(c => c.Client);
+            //var check = _context.Checks
+            //   .Include(c => c.Orders)
+            //       .ThenInclude(ord => ord.Pizza)
+            //   .Include(c => c.Client);
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email");
-            ViewData["PizzaId"] = new SelectList(_context.Pizzas, "Id", "Name");
+            ViewBag.PizzaId = new SelectList(_context.Pizzas, "Id", "Name");
             return View();
         }
 
@@ -75,21 +83,39 @@ namespace WebPizzaShop.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientId,Adress,CreateDate,Paid,CloseDate,Guid,Id")] Check check)
+        public async Task<IActionResult> Create([Bind("ClientId,Adress,CreateDate,Paid,CloseDate,Guid,Id")] Check check, string pizcol)
         {
             if (ModelState.IsValid)
             {
+                check.CreateDate = DateTime.Now;
                 if (check.Paid == true)
                     check.CloseDate = DateTime.Now;
-                _context.Add(check);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email", check.ClientId);
+            ViewBag.pizzaId = new SelectList(_context.Pizzas, "Id", "Name", PizzaId);
+            //Проверка на не пустой список заказа
+            if (order == null) return NotFound();
+            var pizzas = new List<int>();
+            for (int i = 0; i < (int)Convert.ToInt32(pizcol); i++)
+            {
+                pizzas.Add(order.PizzaId);
+            }
+            //Производим заказ если клиент может это сделать. 
+            if (Client.CanPaid(check.ClientId))
+            {
+                Check.addCheck(_context, check.ClientId, pizzas, paid: check.Paid);
+                await _context.SaveChangesAsync();
+            }
+            //
             return View(check);
         }
 
-        // GET: Checks/Edit/5
+        #endregion
+        
+
+        #region Edit
+        // GET: Checks/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,8 +132,7 @@ namespace WebPizzaShop.Controllers
             return View(check);
         }
 
-        // POST: Checks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // POST: Checks/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ClientId,Adress,CreateDate,Paid,CloseDate,Guid,Id")] Check check)
@@ -140,13 +165,38 @@ namespace WebPizzaShop.Controllers
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email", check.ClientId);
             return View(check);
         }
+        #endregion
 
+        #region method
         private bool CheckExists(int id)
         {
             return _context.Checks.Any(e => e.Id == id);
         }
 
+        ///// <summary>
+        ///// Генерация нового заказа
+        ///// </summary>
+        ///// <param name="client"></param>
+        ///// <param name="pizzasId"></param>
+        ///// <param name="isPaid"></param>
+        //private void CreateCheck(BaseContent db, int clientID, List<int> pizzas, bool isPaid = false)
+        //{
+        //    using (db)
+        //    {
+        //        Client client = db.Clients.Find(clientID);
+        //        Console.WriteLine("Client " + client.Name);
+        //        //Проверка на не пустой список заказа
+        //        if (!pizzas.Any()) return;
 
+        //        //Производим заказ если клиент может это сделать. 
+        //        if (client.CanPaid(clientID))
+        //        {
+        //            Check.addCheck(db, clientID, pizzas, paid: isPaid);
+        //        }
+        //    }
+        //}
+
+        #endregion
 
 
     }
