@@ -41,6 +41,30 @@ namespace WebPizzaShop.Models
             }
         }
 
+        /// <summary>
+        /// Получение Icollection пицц в чеке
+        /// </summary>
+        /// <param name="checkId"></param>
+        /// <returns></returns>
+        public static ICollection<Pizza> ListPizzasInCheck(int checkId, BaseContent baseContent)
+        {
+            ICollection<Pizza> pizzas = new List<Pizza> { };
+            using (var db = baseContent)
+            {
+                var order = db.Orders
+                           .Where(ord => ord.CheckId == checkId)
+                           .Select(ord => ord.PizzaId)
+                           .ToList();
+                foreach (var o in order)
+                {
+                    var piz = db.Pizzas.Where(p => p.Id == o).FirstOrDefault();
+                    pizzas.Add(piz);
+                }
+            }
+            return pizzas;
+        }
+
+
 
     }
 }

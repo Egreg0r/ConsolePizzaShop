@@ -48,6 +48,7 @@ namespace WebPizzaShop.Controllers
             
             //вывод суммы с переводом в рубли.
             ViewData["SumCheck"] = s.Insert(s.Length - 2, ",");
+            ViewBag.pizzas = Pizza.ListPizzasInCheck(check.Id, _context);
             return View(check);
         }
 
@@ -137,5 +138,11 @@ namespace WebPizzaShop.Controllers
         {
             return _context.Checks.Any(e => e.Id == id);
         }
+
+        // Get
+
+
+
     }
+
 }
