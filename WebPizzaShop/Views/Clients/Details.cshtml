@@ -7,7 +7,6 @@
 <h1>Клиент</h1>
 
 <div>
-    <h4>Клиент</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -46,7 +45,7 @@
     </dl>
 </div>
 <h3>Неоплаченные заказы</h3>
-<div class="container" >
+<div class="container">
     <table class="table table-dark">
         <thead>
             <tr>
@@ -68,25 +67,30 @@
         <tbody>
             @foreach (var item in ViewBag.cheks)
             {
-            <tr>
-                <td>
-                    @item.Item1
-                </td>
-                <td>
-                    @item.Item2
-                </td>
-                <td>
-                    @item.Item3
-                </td>
-                <td>
-                    @item.Item4 руб.
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @item.Item1
+                    </td>
+                    <td>
+                        @item.Item2
+                    </td>
+                    <td>
+                        @item.Item3
+                    </td>
+                    <td>
+                        @item.Item4 руб.
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
+    <h4> Общая задолженность @ViewData["Credit"] руб.</h4>
+    <form asp-action="Paid">
+        <input type="submit" name="Paid" value="Оплатить все" class="btn btn-primary" />
+        <input type="hidden" asp-for="Id" />
+    </form>
 </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
-        <a asp-action="Index">Назад к списку клиентов</a>
-    </div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
+    <a asp-action="Index">Назад к списку клиентов</a>
+</div>

@@ -22,6 +22,7 @@ namespace WebPizzaShop.Controllers
         // GET: Clients
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Clients.ToListAsync());
         }
 
@@ -41,16 +42,29 @@ namespace WebPizzaShop.Controllers
             }
             // чек и его сумма
             var checkWhithSum = new List<(string id, string date, string adress, string sum)>();
-            Check check = new Check();
-            //var cheksClient = check.GetClientNoPaidCheck(client.Id);
-            foreach(var ch in check.GetClientNoPaidCheck(client.Id))
+            int credit = 0;
+            foreach (var ch in await GetClientNoPaidCheck(client.Id))
             {
-                var k = ch.SumCheck(ch.Id, _context).IntToRub();
-                checkWhithSum.Add((ch.Id.ToString(), ch.CreateDate.ToString("dd.MM.yyyy hh:mm"), ch.Adress, k));
+                var k = ch.SumCheck(ch.Id);
+                credit = credit + k;
+                checkWhithSum.Add((ch.Id.ToString(), ch.CreateDate.ToString("dd.MM.yyyy hh:mm"), ch.Adress, k.IntToRub()));
             }
 
+            ViewData["Credit"] = credit.IntToRub();
             ViewBag.cheks = checkWhithSum;
             return View(client);
+        }
+
+        [HttpPost, ActionName("Paid")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Paid(int id)
+        {
+            foreach (var p in await GetClientNoPaidCheck(id))
+            {
+                SetChecksIsPaid(p.Id);
+            }
+            //await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Clients/Create
@@ -59,8 +73,8 @@ namespace WebPizzaShop.Controllers
             return View();
         }
 
+
         // POST: Clients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Email,RegistrDate,Guid,Id")] Client client)
@@ -74,7 +88,7 @@ namespace WebPizzaShop.Controllers
             return View(client);
         }
 
-        // GET: Clients/Edit/5
+        // GET: Clients/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,8 +104,7 @@ namespace WebPizzaShop.Controllers
             return View(client);
         }
 
-        // POST: Clients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // POST: Clients/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Email,RegistrDate,Guid,Id")] Client client)
@@ -124,6 +137,8 @@ namespace WebPizzaShop.Controllers
             return View(client);
         }
 
+
+
         // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -153,9 +168,51 @@ namespace WebPizzaShop.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        #region method
+
         private bool ClientExists(int id)
         {
             return _context.Clients.Any(e => e.Id == id);
         }
+
+        /// <summary>
+        /// Проставление признака оплаты чека. 
+        /// </summary>
+        /// <param name="id">Check.id</param>
+        public async void SetChecksIsPaid(int id)
+        {
+            using (var db = new BaseContent())
+            {
+                Check check = db.Checks.FirstOrDefault(c => c.Id == id);
+                if (check != null)
+                {
+                    check.Paid = true;
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Возвращает список неоплаченных счетов
+        /// </summary>
+        /// <param name=" clienId">Client.id</param>
+
+        public async Task<ICollection<Check>> GetClientNoPaidCheck(int id)
+        {
+            using (var db = new BaseContent())
+            {
+                var check = db.Checks
+                    .Include(c => c.Orders)
+                    .Where(cl => cl.ClientId == id && cl.Paid == false)
+                    .AsNoTracking();
+                return await check.ToListAsync();
+            }
+
+        }
+        #endregion
     }
 }
+
+

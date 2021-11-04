@@ -115,43 +115,13 @@ namespace WebPizzaShop.Models
             }
         }
 
-        /// <summary>
-        /// Проставление признака оплаты чека. 
-        /// </summary>
-        /// <param name="id">Check.id</param>
-        public void SetChecksIsPaid(int id)
-        {
-            using (var db = new BaseContent())
-            {
-                Check check = db.Checks.FirstOrDefault(c => c.Id == id);
-                if (check != null)
-                {
-                    check.Paid = true;
-                    db.SaveChanges();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Оплата всей задолженности клиента. 
-        /// </summary>
-        /// <param name="clientID"></param>
-        public void AllSetChecksPaid(int clientID, BaseContent baseContent)
-        {
-
-            var client = GetClientNoPaidCheck(clientID);
-            foreach (var p in client)
-            {
-                SetChecksIsPaid(p.Id);
-            }
-        }
 
         /// <summary>
         /// Суммарная цена покупок в чеке. 
         /// </summary>
         /// <param name="checkId"></param>
         /// <returns></returns>
-        public int SumCheck(int checkId, BaseContent baseContent)
+        public int SumCheck(int checkId)
         {
             using (var db = new BaseContent())
             {
@@ -165,39 +135,7 @@ namespace WebPizzaShop.Models
                 return prices;
             }
 
-        }
-
-        /// <summary>
-        /// Возвращает список неоплаченных счетов
-        /// </summary>
-        /// <param name=" clienId">Client.id</param>
-
-        public ICollection<Check> GetClientNoPaidCheck(int id)
-        {
-            using (var db = new BaseContent())
-            {
-                var check = db.Checks
-                    .Include(c => c.Orders)
-                        .ThenInclude(o => o.Pizza)
-                    .Include(c => c.Client)
-                    .Where(cl => cl.Client.Id == id)
-                    .AsNoTracking();
-                int sum = 0;
-                foreach (var p in check)
-                {
-                    int sumord = 0;
-                    foreach (var k in p.Orders)
-                    {
-                        if (p.Id == k.CheckId)
-                            sumord = sumord + k.Pizza.Price;
-                    }
-                    sum = sum + sumord;
-                }
-                return check.ToList();
-            }
-
 
         }
-
     }
 }

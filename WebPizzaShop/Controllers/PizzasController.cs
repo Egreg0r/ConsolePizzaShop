@@ -24,7 +24,7 @@ namespace WebPizzaShop.Controllers
             return View(await _context.Pizzas.ToListAsync());
         }
 
-        // GET: Pizzas/Details/5
+        // GET: Pizzas/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,8 +49,6 @@ namespace WebPizzaShop.Controllers
         }
 
         // POST: Pizzas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Active,Name,Price,Guid,Id")] Pizza pizza)
@@ -64,7 +62,7 @@ namespace WebPizzaShop.Controllers
             return View(pizza);
         }
 
-        // GET: Pizzas/Edit/5
+        // GET: Pizzas/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,9 +78,7 @@ namespace WebPizzaShop.Controllers
             return View(pizza);
         }
 
-        // POST: Pizzas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Pizzas/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Active,Name,Price,Guid,Id")] Pizza pizza)
@@ -115,7 +111,7 @@ namespace WebPizzaShop.Controllers
             return View(pizza);
         }
 
-        // GET: Pizzas/Delete/5
+        // GET: Pizzas/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,13 +129,15 @@ namespace WebPizzaShop.Controllers
             return View(pizza);
         }
 
-        // POST: Pizzas/Delete/5
+        // POST: Pizzas/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var pizza = await _context.Pizzas.FindAsync(id);
-            _context.Pizzas.Remove(pizza);
+            pizza.Active = false;
+            pizza.CloseDate = DateTime.Now;
+            _context.Pizzas.Update(pizza);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
