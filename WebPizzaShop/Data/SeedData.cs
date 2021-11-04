@@ -34,20 +34,20 @@ namespace WebPizzaShop.Data
             client.AddClient("Тест норм клиент", "roga@mail.ru");
             client.AddClient("Тест должник", "everydebtor@mail.ru", DateTime.Parse("01.01.2021"));
 
-            List<int> pizzas;
 
-            db = new BaseContent();
+            List<int> pizzas;
+            //db = new BaseContent();
             pizzas = new List<int> {1,2};
             pizzas.Add(2);
-            Check.addCheck(db, 1, pizzas);
+            Check.addCheckNow(1, pizzas);
 
-            db = new BaseContent();
+            //db = new BaseContent();
             pizzas = new List<int> {2,3,1 };
-            Check.addCheck(db, 2, pizzas);
+            Check.addCheck(2, pizzas, DateTime.Parse("01.09.2021"));
 
-            db = new BaseContent();
+            //db = new BaseContent();
             pizzas = new List<int> {1,1,2,2 };
-            Check.addCheck(db, 1, pizzas);
+            Check.addCheckNow(1, pizzas);
 
 
         }

@@ -70,12 +70,12 @@ namespace WebPizzaShop.Controllers
         // GET: Checks/Create
         public IActionResult Create()
         {
-            //var check = _context.Checks
-            //   .Include(c => c.Orders)
-            //       .ThenInclude(ord => ord.Pizza)
-            //   .Include(c => c.Client);
-            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email");
-            ViewBag.PizzaId = new SelectList(_context.Pizzas, "Id", "Name");
+            var check = _context.Checks
+               .Include(c => c.Orders)
+                   .ThenInclude(ord => ord.Pizza)
+               .Include(c => c.Client);
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name");
+            ViewData["PizzaId"] = new SelectList(_context.Pizzas, "Id", "Name");
             return View();
         }
 
@@ -83,31 +83,30 @@ namespace WebPizzaShop.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientId,Adress,CreateDate,Paid,CloseDate,Guid,Id")] Check check, string pizcol)
+        public async Task<IActionResult> Create([Bind("ClientId,Adress,CreateDate,Paid,CloseDate,Guid,Id")] Check check, string pizcol, [Bind("CheckId, PizzaId, Id, Guid")] Order order)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && order != null && Client.CanPaid(check.ClientId))
             {
                 check.CreateDate = DateTime.Now;
                 if (check.Paid == true)
                     check.CloseDate = DateTime.Now;
+                
+                //Проверка на не пустой список заказа
+                var pizzas = new List<int>();
+                for (int i = 0; i < (int)Convert.ToInt32(pizcol); i++)
+                {
+                    pizzas.Add(order.PizzaId);
+                }
+                //Производим заказ если клиент может это сделать. 
+                Check.addCheckNow(check.ClientId, pizzas, paid: check.Paid);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Email", check.ClientId);
-            ViewBag.pizzaId = new SelectList(_context.Pizzas, "Id", "Name", PizzaId);
-            //Проверка на не пустой список заказа
-            if (order == null) return NotFound();
-            var pizzas = new List<int>();
-            for (int i = 0; i < (int)Convert.ToInt32(pizcol); i++)
-            {
-                pizzas.Add(order.PizzaId);
-            }
-            //Производим заказ если клиент может это сделать. 
-            if (Client.CanPaid(check.ClientId))
-            {
-                Check.addCheck(_context, check.ClientId, pizzas, paid: check.Paid);
-                await _context.SaveChangesAsync();
-            }
-            //
+            
+            
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "Name", check.ClientId);
+            ViewData["PizzaId"] = new SelectList(_context.Pizzas, "Id", "Name", order.PizzaId);
             return View(check);
         }
 

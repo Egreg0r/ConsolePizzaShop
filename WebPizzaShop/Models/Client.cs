@@ -36,9 +36,7 @@ namespace WebPizzaShop.Models
         /// регистрирует клиента в таблицу Client
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="adress"></param>
         /// <param name="email"></param>
-        /// <param name="active"></param>
 
         public void AddClient(string name, string email)
         {
@@ -59,10 +57,9 @@ namespace WebPizzaShop.Models
         /// регистрация клиента с указаной датой регистрации в таблицу Client
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="adress"></param>
         /// <param name="regdate"></param>
-        /// <param name="email"></param>
-        /// <param name="active"></param>
+        /// <param name="adress"></param>
+
         public void AddClient(string name, string email, DateTime regdate)
         {
             using (var db = new BaseContent())

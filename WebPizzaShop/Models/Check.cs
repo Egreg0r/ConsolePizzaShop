@@ -40,9 +40,9 @@ namespace WebPizzaShop.Models
         /// <param name="client"></param>
         /// <param name="pizza"></param>
         /// <param name="paid"></param>
-        public static void addCheck(BaseContent db, int clientID, List<int> pizza, string adress = "Самовывоз", bool paid = false)
+        public static void addCheck(int clientID, List<int> pizza, DateTime dateTime, string adress = "Самовывоз", bool paid = false)
         {
-            using (db)
+            using (var db = new BaseContent ())
             {
                 Check check;
                 if (paid == true)
@@ -52,7 +52,7 @@ namespace WebPizzaShop.Models
                     check = (new Check
                     {
                         Client = db.Clients.Find(clientID),
-                        CreateDate = DateTime.Now,
+                        CreateDate = dateTime,
                         Paid = paid,
                         CloseDate = payDate,
                         Adress = adress,
@@ -63,7 +63,7 @@ namespace WebPizzaShop.Models
                     check = (new Check
                     {
                         Client = db.Clients.Find(clientID),
-                        CreateDate = DateTime.Now,
+                        CreateDate = dateTime,
                         Paid = paid,
                         Adress = adress,
                     });
@@ -82,9 +82,16 @@ namespace WebPizzaShop.Models
                     });
                 }
                 db.Orders.AddRange(orders);
-                //db.SaveChanges();
+                db.SaveChanges();
             }
         }
+
+        public static void addCheckNow(int clientID, List<int> pizza, string adress = "Самовывоз", bool paid = false)
+        {
+            var d = DateTime.Now;
+            addCheck(clientID, pizza, d, adress, paid);
+        }
+
 
 
         /// <summary>
