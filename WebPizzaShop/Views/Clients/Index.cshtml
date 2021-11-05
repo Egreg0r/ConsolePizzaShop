@@ -9,6 +9,11 @@
 <p>
     <a asp-action="Create">Новый клиент</a>
 </p>
+<form class="form-inline">
+    <label>Фильтр:  </label>
+    <select name="filter" asp-for="@ViewData["Filter"]" class="form-control" asp-items="ViewBag.Filter">    </select>
+    <input type="submit" value="Применить" class="btn btn-info" />
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -37,7 +42,8 @@
                 @Html.DisplayFor(modelItem => item.RegistrDate)
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-action="Create" asp-route-id="@item.Id" asp-controller="Checks" >Новый заказ</a>
             </td>
         </tr>
 }

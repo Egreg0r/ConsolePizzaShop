@@ -5,7 +5,9 @@
 }
 
 <h1>Заказ</h1>
-
+<h2>
+    <label class="alert-danger">@ViewData["CantPaid"]</label>
+</h2>
 <h4>Новый заказ</h4>
 <hr />
 <div class="row">
@@ -22,20 +24,21 @@
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Orders.First().Pizza.Name" class="control-label"></label>
-                <select asp-for="Orders.First().PizzaId" class="form-control" asp-items="ViewBag.pizzaId"></select>
-                <input type="number" name="pizcol" value="1" min="1" max="20" />
-            </div>
-
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Paid" /> @Html.DisplayNameFor(model => model.Paid)
-                </label>
+                <label asp-for="Orders.FirstOrDefault().Pizza.Name" class="control-label"></label>
+                <select asp-for="Orders.FirstOrDefault().PizzaId" class="form-control" asp-items="ViewBag.pizzaId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" name="Create" value="Создать" class="btn btn-primary" />
-                <input type="hidden" asp-for="Orders" />
-
+                <label class="control-label"> Колличество </label>
+                <input type="number" name="pizcol" value="1" min="1" max="20" />
+            </div>
+            <div class="form-group form-check">
+                  <label class="form-check-label">
+                      <input class="form-check-input" asp-for="Paid" /> @Html.DisplayNameFor(model => model.Paid)
+                  </label>
+            </div>
+            <div class="form-group">
+                  <input type="submit" name="Create" value="Создать" class="btn btn-primary" />
+                  <input type="hidden" asp-for="Orders" />
             </div>
         </form>
     </div>

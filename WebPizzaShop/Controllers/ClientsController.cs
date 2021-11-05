@@ -23,10 +23,24 @@ namespace WebPizzaShop.Controllers
         #region Index
 
         // GET: Clients
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filter)
         {
-
-            return View(await _context.Clients.OrderBy(p => p.Name).ToListAsync());
+            List<string> filterList = new List<string>();
+            filterList.Add("Должники");
+            filterList.Add("Просроченно");
+            filterList.Add("Все");
+            ViewData["Filter"] = new SelectList(filterList);
+            switch (filter)
+            {
+                case "Должники":
+                    return View(await CollectClientFilter(false));
+                case "Просроченно":
+                    return View(await BedCreditorClient());
+                case "Все":
+                    return View(await _context.Clients.OrderBy(p => p.Name).ToListAsync());
+                default: 
+                    return View(await _context.Clients.OrderBy(p => p.Name).ToListAsync()); ;
+            }
         }
 
         // GET: Clients/Details
@@ -46,7 +60,7 @@ namespace WebPizzaShop.Controllers
             // чек и его сумма
             var checkWhithSum = new List<(string id, string date, string adress, string sum)>();
             int credit = 0;
-            foreach (var ch in await GetClientNoPaidCheck(client.Id))
+            foreach (var ch in await CollectionClientNoPaidCheck(client.Id))
             {
                 var k = ch.SumCheck(ch.Id);
                 credit = credit + k;
@@ -63,7 +77,7 @@ namespace WebPizzaShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Paid(int id)
         {
-            foreach (var p in await GetClientNoPaidCheck(id))
+            foreach (var p in await CollectionClientNoPaidCheck(id))
             {
                 SetChecksIsPaid(p.Id);
             }
@@ -221,7 +235,7 @@ namespace WebPizzaShop.Controllers
         /// </summary>
         /// <param name=" clienId">Client.id</param>
 
-        public async Task<ICollection<Check>> GetClientNoPaidCheck(int id)
+        private async Task<ICollection<Check>> CollectionClientNoPaidCheck(int id)
         {
             using (var db = new BaseContent())
             {
@@ -233,6 +247,46 @@ namespace WebPizzaShop.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Возвраение списка клиентов по признаку оплаченных чеков
+        /// </summary>
+        /// <param name="pay">true/false</param>
+        /// <returns></returns>
+        private async Task<ICollection<Client>> CollectClientFilter(bool pay)
+        {
+            using (var db = new BaseContent())
+            {
+                var client = from ch in db.Checks.Include(c => c.Client)
+                             where ch.Paid == pay
+                             select ch.Client;
+
+                return await client.Distinct().ToListAsync();
+            }
+        }
+
+
+        private async Task<ICollection<Client>> BedCreditorClient()
+        {
+                var client = await CollectClientFilter(false);
+                var clientList = new List<Client>();
+            foreach (var cl in client)
+            {
+                using (var db = new BaseContent())
+                {
+
+                    if (!Client.CanPaid(cl.Id))
+                        clientList.Add(cl);
+                        
+
+                }
+            }
+                return clientList;
+
+        }
+
+
+
         #endregion
     }
 }
