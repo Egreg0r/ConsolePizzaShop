@@ -9,20 +9,18 @@
 <p>
   <a asp-action="Create">Новый клиент</a>
 </p>
-<p>
-        <dl class="row">
-            <dt class="col-sm-1">
-                <label>Фильтр:</label>
-            </dt>
-            <dd class="col-sm-auto">
-                <select name="filter" asp-for="@ViewData["Filter"]" class="form-control" asp-items="ViewBag.Filter"></select>
-                </dd>
-            <dd>
-                <input type="submit" value="Применить" class="btn btn-info" />
-            </dd>
+<form class="form-inline">
+    <dl class="row">
+        <dt class="col-sm-2">
+            <label>Фильтр:</label>
+        </dt>
+        <dd class="col-sm-10">
+            <select name="filter" asp-for="@ViewData["Filter"]" class="form-control" asp-items="ViewBag.Filter"></select>
+            <input type="submit" value="Применить" class="btn btn-info" />
+        </dd>
 
-        </dl>
-</p>
+    </dl>
+</form>
 <table class="table">
     <thead>
         <tr>
