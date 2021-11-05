@@ -7,13 +7,22 @@
 <h1>Клиенты</h1>
 
 <p>
-    <a asp-action="Create">Новый клиент</a>
+  <a asp-action="Create">Новый клиент</a>
 </p>
-<form class="form-inline">
-    <label>Фильтр:  </label>
-    <select name="filter" asp-for="@ViewData["Filter"]" class="form-control" asp-items="ViewBag.Filter">    </select>
-    <input type="submit" value="Применить" class="btn btn-info" />
-</form>
+<p>
+        <dl class="row">
+            <dt class="col-sm-1">
+                <label>Фильтр:</label>
+            </dt>
+            <dd class="col-sm-auto">
+                <select name="filter" asp-for="@ViewData["Filter"]" class="form-control" asp-items="ViewBag.Filter"></select>
+                </dd>
+            <dd>
+                <input type="submit" value="Применить" class="btn btn-info" />
+            </dd>
+
+        </dl>
+</p>
 <table class="table">
     <thead>
         <tr>
